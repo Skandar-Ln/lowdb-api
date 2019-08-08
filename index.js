@@ -6,6 +6,11 @@ const FileAsync = require('lowdb/adapters/FileAsync')
 // Create server
 const app = express()
 app.use(bodyParser.json())
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 
 // Create database instance and start server
 const adapter = new FileAsync('db.json')
@@ -32,12 +37,6 @@ low(adapter)
     return db.defaults({ posts: [] }).write()
   })
   .then(() => {
-    app.use(function(req, res, next) {
-        res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        next();
-    });
-
     app.listen(3000, () => console.log('listening on port 3000'))
   });
   
